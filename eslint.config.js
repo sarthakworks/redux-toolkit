@@ -1,38 +1,63 @@
-import js from '@eslint/js'
-import globals from 'globals'
-import react from 'eslint-plugin-react'
-import reactHooks from 'eslint-plugin-react-hooks'
-import reactRefresh from 'eslint-plugin-react-refresh'
+import globals from "globals";
+import pluginJs from "@eslint/js";
+import pluginReact from "eslint-plugin-react";
+import pluginSonarjs from "eslint-plugin-sonarjs";
+import pluginI18next from "eslint-plugin-i18next";
 
 export default [
-  { ignores: ['dist'] },
   {
-    files: ['**/*.{js,jsx}'],
+    // Ignore patterns to skip certain files and directories
+    ignorePatterns: [
+      "**/akamai_cache/**",
+      "webpack*.js",
+      "**/dist/**",
+      "**/node_modules/**",
+    ],
+  },
+  {
+    files: ["**/*.{js,mjs,cjs,jsx}"],
     languageOptions: {
-      ecmaVersion: 2020,
-      globals: globals.browser,
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+      },
       parserOptions: {
-        ecmaVersion: 'latest',
-        ecmaFeatures: { jsx: true },
-        sourceType: 'module',
+        ecmaVersion: "latest",
+        sourceType: "module",
       },
     },
-    settings: { react: { version: '18.3' } },
-    plugins: {
-      react,
-      'react-hooks': reactHooks,
-      'react-refresh': reactRefresh,
+  },
+  {
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+      },
     },
     rules: {
-      ...js.configs.recommended.rules,
-      ...react.configs.recommended.rules,
-      ...react.configs['jsx-runtime'].rules,
-      ...reactHooks.configs.recommended.rules,
-      'react/jsx-no-target-blank': 'off',
-      'react-refresh/only-export-components': [
-        'warn',
-        { allowConstantExport: true },
+      "react/react-in-jsx-scope": "off",
+      "react/function-component-definition": "off",
+      "react/require-default-props": "off",
+      "react/forbid-prop-types": "off",
+      "object-curly-newline": "off",
+      "react/jsx-props-no-spreading": "off",
+      "arrow-body-style": "off",
+      "react/jsx-one-expression-per-line": "off",
+      "no-restricted-syntax": "off",
+      "react/no-danger": "off",
+      "no-underscore-dangle": "off",
+      "max-len": [
+        "error",
+        {
+          code: 120,
+        },
       ],
+      "import/no-unresolved": ["error", { ignore: ["^skyplus-design-system-app/"] }],
+      "no-console": "error",
     },
   },
-]
+  // Extend the recommended configurations
+  pluginJs.configs.recommended,
+  pluginReact.configs.flat.recommended,
+  pluginSonarjs.configs.recommended,
+  pluginI18next.configs.recommended,
+];
